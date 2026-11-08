@@ -1,0 +1,17 @@
+import { readFileSync, existsSync, statSync } from 'node:fs';
+import path from 'node:path';
+import { execFileSync } from 'node:child_process';
+const html = readFileSync('index.html', 'utf8');
+const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
+const errors = [];
+if (new Set(ids).size !== ids.length) errors.push('Duplicate HTML IDs');
+for (const match of html.matchAll(/(?:src|href)="([^"]+)"/g)) {
+  const value = match[1];
+  if (value.startsWith('#')) { if (value.length > 1 && !ids.includes(value.slice(1))) errors.push(`Broken anchor: ${value}`); }
+  else if (!/^(https?:|mailto:|data:)/.test(value) && !existsSync(path.resolve(value))) errors.push(`Missing asset: ${value}`);
+}
+for (const asset of ['assets/bioagent-world-demo.mp4', 'assets/hero-loop.mp4']) if (statSync(asset).size >= 100 * 1024 * 1024) errors.push(`Media exceeds GitHub file limit: ${asset}`);
+if (/Stanford|Caltech|Movement Lab/.test(html)) errors.push('Unexpected reference-site identity');
+execFileSync(process.execPath, ['--check', 'app.js']);
+if (errors.length) { console.error(errors.join('\n')); process.exit(1); }
+console.log(`Checked local assets, ${ids.length} unique anchors, JavaScript syntax, and media sizes.`);
