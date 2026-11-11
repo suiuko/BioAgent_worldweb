@@ -1,4 +1,5 @@
-import { cpSync, mkdirSync, readdirSync, statSync, rmSync } from 'node:fs';
+import { cpSync, mkdirSync, readdirSync, statSync, rmSync, readFileSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const projectRoot = fileURLToPath(new URL('../', import.meta.url));
@@ -8,6 +9,13 @@ if (path.resolve(projectRoot) !== process.cwd() || path.dirname(output) !== proc
 rmSync(output, { recursive: true, force: true });
 mkdirSync('dist', { recursive: true });
 for (const item of ['index.html', 'styles.css', 'app.js', 'assets']) cpSync(item, path.join('dist', item), { recursive: true });
+// New releases must not reuse a browser's cached stylesheet or application script.
+let html = readFileSync('dist/index.html', 'utf8');
+for (const file of ['styles.css', 'app.js']) {
+  const hash = createHash('sha256').update(readFileSync(file)).digest('hex').slice(0, 12);
+  html = html.replace(`"${file}"`, `"${file}?v=${hash}"`);
+}
+writeFileSync('dist/index.html', html);
 let bytes = 0;
 function total(dir) { for (const item of readdirSync(dir)) { const entry = path.join(dir, item); const stat = statSync(entry); if (stat.isDirectory()) total(entry); else bytes += stat.size; } }
 total('dist');
