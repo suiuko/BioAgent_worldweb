@@ -1,21 +1,41 @@
-let language = localStorage.getItem('bioagent-world-language') || 'en';
+let language = 'en';
+try { language = localStorage.getItem('bioagent-world-language') === 'zh' ? 'zh' : 'en'; } catch {}
 const languageToggle = document.querySelector('#language-toggle');
 const heroVideo = document.querySelector('#hero-video');
 const heroToggle = document.querySelector('#hero-play-toggle');
-const fullVideo = document.querySelector('#full-video');
-const objectRecords = {
-  vessel: { en: ['Sample vessel', 'vessel_01', 'On the work surface'], zh: ['样品容器', 'vessel_01', '位于工作台表面'] },
-  instrument: { en: ['Bench instrument', 'instrument_01', 'Beside the work surface'], zh: ['台式仪器', 'instrument_01', '位于工作台旁侧'] },
-  storage: { en: ['Storage unit', 'storage_01', 'Along the rear wall'], zh: ['收纳柜', 'storage_01', '位于后方墙边'] }
-};
-let selectedObject = 'vessel';
-function updateObject() {
-  const record = objectRecords[selectedObject][language];
-  ['object-name', 'object-id', 'object-location'].forEach((id, i) => document.getElementById(id).textContent = record[i]);
+const demoVideos = [...document.querySelectorAll('.recording-frame video')];
+let backbone = 0;
+// Manuscript Table 1: successes out of 20, ordered as π0.5, Diffusion Policy, LingBot-VA.
+const skills = [
+  { en:'Open the six-well plate', zh:'打开六孔板', counts:[[16,15],[11,9],[16,16]] },
+  { en:'Grasp a centrifuge tube', zh:'抓取离心管', counts:[[14,13],[12,11],[18,16]] },
+  { en:'Heat the centrifuge tube in a water bath', zh:'在水浴中加热离心管', counts:[[13,10],[8,6],[14,13]] },
+  { en:'Retrieve the medium-containing tube from the water bath', zh:'从水浴中取出培养基试管', counts:[[18,18],[10,10],[17,16]] },
+  { en:'Return the centrifuge tube to the rack', zh:'将离心管放回试管架', counts:[[16,16],[9,8],[15,15]] },
+  { en:'Uncap the medium-containing tube', zh:'打开培养基试管盖', counts:[[12,9],[6,3],[13,11]] },
+  { en:'Aspirate fresh medium', zh:'吸取新鲜培养基', counts:[[17,16],[9,7],[16,15]] },
+  { en:'Dispense fresh medium into the six-well plate', zh:'将新鲜培养基分装至六孔板', counts:[[19,19],[10,11],[18,18]] },
+  { en:'Recap the centrifuge tube', zh:'重新盖上离心管盖', counts:[[13,11],[7,4],[15,12]] },
+  { en:'Regrasp the six-well plate lid', zh:'重新抓取六孔板盖', counts:[[19,16],[13,13],[20,20]] },
+  { en:'Replace the six-well plate lid', zh:'放回六孔板盖', counts:[[10,7],[4,2],[12,11]] }
+];
+function renderSkills() {
+  const rows = skills.map((skill, index) => {
+    const row = document.createElement('tr');
+    const name = document.createElement('th');
+    name.scope = 'row'; name.textContent = `${String(index + 1).padStart(2,'0')}  ${skill[language]}`; row.append(name);
+    skill.counts[backbone].forEach((count, source) => {
+      const cell = document.createElement('td');
+      if (source === 1) cell.className = 'accent-cell';
+      cell.textContent = `${count}/20 (${count * 5}%)`; row.append(cell);
+    });
+    return row;
+  });
+  document.querySelector('#skill-table-body').replaceChildren(...rows);
 }
 function updatePlayButton() {
   heroToggle.innerHTML = `<span aria-hidden="true">${heroVideo.paused ? '▶' : 'Ⅱ'}</span>`;
-  heroToggle.setAttribute('aria-label', language === 'zh' ? (heroVideo.paused ? '播放背景视频' : '暂停背景视频') : (heroVideo.paused ? 'Play background video' : 'Pause background video'));
+  heroToggle.setAttribute('aria-label', language === 'zh' ? (heroVideo.paused ? '播放概览视频' : '暂停概览视频') : (heroVideo.paused ? 'Play overview video' : 'Pause overview video'));
 }
 function setLanguage(next) {
   language = next;
@@ -23,48 +43,38 @@ function setLanguage(next) {
   document.querySelectorAll('[data-en][data-zh]').forEach(el => el.textContent = el.dataset[next]);
   languageToggle.textContent = next === 'en' ? '中文' : 'EN';
   languageToggle.setAttribute('aria-label', next === 'en' ? 'Switch to Chinese' : '切换到英文');
-  document.title = next === 'en' ? 'BioAgent-world — A world agents can understand' : 'BioAgent-world — 构建智能体可以理解的世界';
-  localStorage.setItem('bioagent-world-language', next);
-  updateObject();
-  updatePlayButton();
+  document.title = next === 'en' ? 'BioAgent-world — Interactive Digital Twins for Scalable Robot Skill Learning' : 'BioAgent-world — 用于规模化机器人技能学习的可交互数字孪生';
+  try { localStorage.setItem('bioagent-world-language', next); } catch {}
+  renderSkills(); updatePlayButton();
 }
 languageToggle.addEventListener('click', () => setLanguage(language === 'en' ? 'zh' : 'en'));
 heroToggle.addEventListener('click', async () => {
-  if (heroVideo.paused) { try { await heroVideo.play(); } catch {} } else { heroVideo.pause(); }
+  if (heroVideo.paused) { try { await heroVideo.play(); } catch {} } else heroVideo.pause();
   updatePlayButton();
 });
 heroVideo.addEventListener('play', updatePlayButton);
 heroVideo.addEventListener('pause', updatePlayButton);
-if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  heroVideo.autoplay = false;
+if (matchMedia('(prefers-reduced-motion: reduce)').matches) { heroVideo.autoplay = false; heroVideo.pause(); }
+demoVideos.forEach(video => video.addEventListener('play', () => {
   heroVideo.pause();
+  demoVideos.filter(other => other !== video).forEach(other => other.pause());
+}));
+const tabs = [...document.querySelectorAll('[data-backbone]')];
+function selectBackbone(tab, focus = false) {
+  backbone = Number(tab.dataset.backbone);
+  tabs.forEach(item => { item.setAttribute('aria-selected', String(item === tab)); item.tabIndex = item === tab ? 0 : -1; });
+  document.querySelector('#skill-table-panel').setAttribute('aria-labelledby', tab.id);
+  renderSkills(); if (focus) tab.focus();
 }
-const demoTabs = [...document.querySelectorAll('[data-tab]')];
-function activateTab(tab, moveFocus = false) {
-  demoTabs.forEach(button => {
-    const active = button === tab;
-    button.setAttribute('aria-selected', String(active));
-    button.tabIndex = active ? 0 : -1;
-    document.getElementById(button.getAttribute('aria-controls')).hidden = !active;
-  });
-  if (tab.dataset.tab !== 'real') fullVideo.pause();
-  if (moveFocus) tab.focus();
-}
-demoTabs.forEach((tab, index) => {
-  tab.addEventListener('click', () => activateTab(tab));
+tabs.forEach((tab, index) => {
+  tab.addEventListener('click', () => selectBackbone(tab));
   tab.addEventListener('keydown', event => {
-    let target;
-    if (event.key === 'ArrowRight') target = (index + 1) % demoTabs.length;
-    if (event.key === 'ArrowLeft') target = (index - 1 + demoTabs.length) % demoTabs.length;
-    if (event.key === 'Home') target = 0;
-    if (event.key === 'End') target = demoTabs.length - 1;
-    if (target !== undefined) { event.preventDefault(); activateTab(demoTabs[target], true); }
+    let next;
+    if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+    if (event.key === 'ArrowLeft') next = (index + tabs.length - 1) % tabs.length;
+    if (event.key === 'Home') next = 0;
+    if (event.key === 'End') next = tabs.length - 1;
+    if (next !== undefined) { event.preventDefault(); selectBackbone(tabs[next], true); }
   });
 });
-document.querySelectorAll('[data-object]').forEach(button => button.addEventListener('click', () => {
-  selectedObject = button.dataset.object;
-  document.querySelectorAll('[data-object]').forEach(item => { item.classList.toggle('selected', item === button); item.setAttribute('aria-pressed', String(item === button)); });
-  updateObject();
-}));
-fullVideo.addEventListener('play', () => heroVideo.pause());
 setLanguage(language);

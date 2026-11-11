@@ -1,5 +1,11 @@
-import { cpSync, mkdirSync, readdirSync, statSync } from 'node:fs';
+import { cpSync, mkdirSync, readdirSync, statSync, rmSync } from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+const projectRoot = fileURLToPath(new URL('../', import.meta.url));
+const output = path.resolve('dist');
+if (path.resolve(projectRoot) !== process.cwd() || path.dirname(output) !== process.cwd() || path.basename(output) !== 'dist') throw new Error('Run this build from the project root');
+// Only the verified, generated output directory is replaced.
+rmSync(output, { recursive: true, force: true });
 mkdirSync('dist', { recursive: true });
 for (const item of ['index.html', 'styles.css', 'app.js', 'assets']) cpSync(item, path.join('dist', item), { recursive: true });
 let bytes = 0;
