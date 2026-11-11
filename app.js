@@ -66,6 +66,7 @@ function openLab({scroll = false} = {}) {
   labFrame.allow = 'fullscreen'; labFrame.allowFullscreen = true;
   labFrame.loading = scroll ? 'eager' : 'lazy';
   const url = new URL('scene/',location.href); url.searchParams.set('embedded','1'); url.searchParams.set('lang',language);
+  url.searchParams.set('v','__LAB_VIEWER_VERSION__');
   labFrame.src = url.href;
   labFrame.addEventListener('load', () => labFrame?.contentWindow?.postMessage({type:'bioagent:language',language},location.origin));
   labMount.replaceChildren(labFrame);
