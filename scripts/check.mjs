@@ -16,5 +16,16 @@ for (const filename of readdirSync('assets')) {
 }
 if (/Stanford|Caltech|Movement Lab/.test(html)) errors.push('Unexpected reference-site identity');
 execFileSync(process.execPath, ['--check', 'app.js']);
+execFileSync(process.execPath, ['--check', 'scene/viewer.mjs']);
+execFileSync(process.execPath, ['--check', 'scene/math.mjs']);
+execFileSync(process.execPath, ['scripts/check-scene.mjs'], {stdio:'inherit'});
+const sceneHtml = readFileSync('scene/index.html', 'utf8');
+const sceneIds = [...sceneHtml.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]);
+if (new Set(sceneIds).size !== sceneIds.length) errors.push('Duplicate scene HTML IDs');
+for (const match of sceneHtml.matchAll(/(?:src|href)="([^"]+)"/g)) {
+  const value=match[1];
+  if (value.startsWith('#') || /^(https?:|data:)/.test(value)) continue;
+  if (!existsSync(path.resolve('scene', value.split(/[?#]/)[0]))) errors.push(`Missing scene asset: ${value}`);
+}
 if (errors.length) { console.error(errors.join('\n')); process.exit(1); }
 console.log(`Checked local assets, ${ids.length} unique anchors, JavaScript syntax, and media sizes.`);

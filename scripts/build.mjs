@@ -8,7 +8,7 @@ if (path.resolve(projectRoot) !== process.cwd() || path.dirname(output) !== proc
 // Only the verified, generated output directory is replaced.
 rmSync(output, { recursive: true, force: true });
 mkdirSync('dist', { recursive: true });
-for (const item of ['index.html', 'styles.css', 'app.js', 'assets']) cpSync(item, path.join('dist', item), { recursive: true });
+for (const item of ['index.html', 'styles.css', 'app.js', 'assets', 'scene']) cpSync(item, path.join('dist', item), { recursive: true });
 // New releases must not reuse a browser's cached stylesheet or application script.
 let html = readFileSync('dist/index.html', 'utf8');
 for (const file of ['styles.css', 'app.js']) {
@@ -16,6 +16,12 @@ for (const file of ['styles.css', 'app.js']) {
   html = html.replace(`"${file}"`, `"${file}?v=${hash}"`);
 }
 writeFileSync('dist/index.html', html);
+let sceneHtml = readFileSync('dist/scene/index.html', 'utf8');
+for (const file of ['scene.css', 'viewer.mjs']) {
+  const hash = createHash('sha256').update(readFileSync(path.join('scene', file))).digest('hex').slice(0, 12);
+  sceneHtml = sceneHtml.replace(`"${file}"`, `"${file}?v=${hash}"`);
+}
+writeFileSync('dist/scene/index.html', sceneHtml);
 let bytes = 0;
 function total(dir) { for (const item of readdirSync(dir)) { const entry = path.join(dir, item); const stat = statSync(entry); if (stat.isDirectory()) total(entry); else bytes += stat.size; } }
 total('dist');

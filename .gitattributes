@@ -1,0 +1,5 @@
+# Preserve the original export bytes so SHA256SUMS survives Windows checkouts.
+scene/data/** -text
+# Keep the upstream engine's embedded shaders byte-for-byte and out of code diffs.
+scene/vendor/** linguist-vendored
+scene/vendor/playcanvas-2.24.0.min.mjs -text -diff -whitespace

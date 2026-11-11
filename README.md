@@ -17,6 +17,19 @@ node scripts/serve.mjs --dist
 
 The build writes a fresh `dist/` directory. GitHub Actions validates and deploys this directory to GitHub Pages on pushes to `main`. The Sites identity in `.openai/hosting.json` is preserved for the existing private preview.
 
+## Interactive 10.21 laboratory
+
+The homepage demo section links to `scene/`. PlayCanvas 2.24.0 is vendored with its MIT license; the engine and 3D assets load only on that separate page. All resource URLs resolve relative to `scene/data/scene.json`, including when hosted under a GitHub Pages project path.
+
+```sh
+node scripts/check.mjs
+node scripts/build.mjs
+node scripts/serve.mjs --dist --base /BioAgent_worldweb
+# http://127.0.0.1:4173/BioAgent_worldweb/scene/
+```
+
+See [scene/README.md](scene/README.md) for asset conventions, controls, verified interactions, and visual limitations.
+
 ## Content provenance
 
 The current page is based on the user-supplied nine-page manuscript `BioAgent_World_cvpr.pdf`. It supersedes the first draft's description of the earlier offline BioagentNav implementation. The PDF itself is not distributed by this website; author affiliations, publication status, and acceptance claims are not inferred from the review template.

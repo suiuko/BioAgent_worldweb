@@ -1,0 +1,1238 @@
+{
+  "schema": "bioagent_worldweb_asset_bundle_v1",
+  "scene_id": "lab_1021",
+  "source_navigation_frame_id": "sim_scan_1021_navigation",
+  "source_stage_sha256": "5355d73e2aac678cd71e1f4d3258befca86e2aa2d6648b6e6d47a1412118165a",
+  "source_map_sha256": "dd2732446ab857ddf2950b274e5b898f17c01fb9699202e5804166f9f530d43e",
+  "source_native_clock_id": "simulation:f5209e7c-3e01-4745-82e6-bdb4925e2e64",
+  "units": "meter",
+  "up_axis": "Y",
+  "matrix_storage": "row-major, column vectors",
+  "web_from_source": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "background_sog": "splats/room_1021.sog",
+  "background_gaussians": 1734440,
+  "static_geometry_glb": "models/static_room_surfaces.glb",
+  "static_triangles": 149326,
+  "view_presets": {
+    "operation_site_2": {
+      "eye": [
+        -0.05759139795685653,
+        1.81,
+        -0.5431114453359265
+      ],
+      "target": [
+        0.52,
+        1.1,
+        -1.66
+      ],
+      "navigation_reference_xy_yaw": [
+        0.65763,
+        1.872983,
+        -2.343487
+      ]
+    },
+    "operation_site_3": {
+      "eye": [
+        2.3996702218061525,
+        1.83,
+        -0.5518641683907455
+      ],
+      "target": [
+        1.625,
+        1.15,
+        -1.56
+      ],
+      "navigation_reference_xy_yaw": [
+        1.448206,
+        1.711483,
+        -0.744055
+      ]
+    }
+  },
+  "initial_view": "operation_site_2",
+  "assets": [
+    {
+      "id": "reagent_rack_black_01",
+      "name": {
+        "en": "Black tube rack",
+        "zh": "黑色试管架"
+      },
+      "files": {
+        "glb": "models/reagent_rack_black_01.glb"
+      },
+      "world_from_asset": [
+        [
+          0.9575447809948756,
+          0.003108399859594571,
+          -0.2882678099264439,
+          0.5049744248390198
+        ],
+        [
+          -0.004901711376815716,
+          0.9999728646848421,
+          -0.005499374470680107,
+          0.7220392227172852
+        ],
+        [
+          0.28824289343373916,
+          0.006678902926622396,
+          0.9575340341944211,
+          -1.487788438796997
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "source_prim_paths": [
+        "/World/Lab/reagent_rack_black_01"
+      ],
+      "dimensions_source_xyz_m": [
+        0.282,
+        0.06,
+        0.055
+      ],
+      "source_basis": "original USD local X,Y,Z",
+      "dimensions_evidence": "user-confirmed STL scale",
+      "pick_bounds_y_up_m": [
+        [
+          -0.17599999904632568,
+          0.0,
+          -0.029999999329447746
+        ],
+        [
+          0.10599999874830246,
+          0.054999999701976776,
+          0.029999999329447746
+        ]
+      ],
+      "provenance": "User STL, unchanged metric geometry",
+      "physics_parameters_measured": false,
+      "geometry": {
+        "triangles": 10816
+      },
+      "position_m": [
+        0.5049744248390198,
+        0.7220392227172852,
+        -1.487788438796997
+      ],
+      "rotation_xyzw": [
+        0.0030774224446943727,
+        -0.14568291723426716,
+        -0.002024136525982543,
+        0.9893244765841663
+      ],
+      "description": {
+        "en": "Supports and indexes four reagent tubes",
+        "zh": "承托和定位试管"
+      }
+    },
+    {
+      "id": "reagent_tube_black_01",
+      "name": {
+        "en": "Tube 01",
+        "zh": "01 号试管"
+      },
+      "files": {
+        "glb": "models/reagent_tube_black_01.glb"
+      },
+      "world_from_asset": [
+        [
+          0.9575392061091393,
+          0.003113894856116601,
+          -0.28828626818269354,
+          0.5767901539802551
+        ],
+        [
+          -0.0049181459715917026,
+          0.9999725904348473,
+          -0.005534457446107031,
+          0.721671462059021
+        ],
+        [
+          0.28826113266287035,
+          0.006717293937718062,
+          0.957528274965326,
+          -1.4661704301834106
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "source_prim_paths": [
+        "/World/Lab/reagent_tube_black_01"
+      ],
+      "dimensions_source_xyz_m": [
+        0.035732924938201904,
+        0.035732924938201904,
+        0.11269368976354599
+      ],
+      "source_basis": "original USD local X,Y,Z",
+      "dimensions_evidence": "preview geometry bounds",
+      "pick_bounds_y_up_m": [
+        [
+          -0.017866462469100952,
+          -3.145393255272493e-21,
+          -0.017866462469100952
+        ],
+        [
+          0.017866462469100952,
+          0.11269368976354599,
+          0.017866462469100952
+        ]
+      ],
+      "provenance": "Registered display geometry from the frozen simulation USD",
+      "physics_parameters_measured": false,
+      "geometry": {
+        "triangles": 1182
+      },
+      "position_m": [
+        0.5767901539802551,
+        0.721671462059021,
+        -1.4661704301834106
+      ],
+      "rotation_xyzw": [
+        0.003095993740536652,
+        -0.14569240659723987,
+        -0.0020296810918926773,
+        0.9893230098796492
+      ]
+    },
+    {
+      "id": "reagent_tube_black_02",
+      "name": {
+        "en": "Tube 02",
+        "zh": "02 号试管"
+      },
+      "files": {
+        "glb": "models/reagent_tube_black_02.glb"
+      },
+      "world_from_asset": [
+        [
+          0.9575371746918181,
+          0.003102796087236056,
+          -0.2882931350893605,
+          0.5049742460250854
+        ],
+        [
+          -0.004902162755559019,
+          0.9999727504863869,
+          -0.005519699720884297,
+          0.7220390439033508
+        ],
+        [
+          0.28826815273895456,
+          0.006698577545401172,
+          0.957526292680958,
+          -1.4877885580062866
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "source_prim_paths": [
+        "/World/Lab/reagent_tube_black_02"
+      ],
+      "dimensions_source_xyz_m": [
+        0.035948824137449265,
+        0.035948824137449265,
+        0.11520761251449585
+      ],
+      "source_basis": "original USD local X,Y,Z",
+      "dimensions_evidence": "preview geometry bounds",
+      "pick_bounds_y_up_m": [
+        [
+          -0.017974412068724632,
+          -3.145393255272493e-21,
+          -0.017974412068724632
+        ],
+        [
+          0.017974412068724632,
+          0.11520761251449585,
+          0.017974412068724632
+        ]
+      ],
+      "provenance": "Registered display geometry from the frozen simulation USD",
+      "physics_parameters_measured": false,
+      "geometry": {
+        "triangles": 1182
+      },
+      "position_m": [
+        0.5049742460250854,
+        0.7220390439033508,
+        -1.4877885580062866
+      ],
+      "rotation_xyzw": [
+        0.003087536415715311,
+        -0.1456959875164817,
+        -0.002022838522549422,
+        0.9893225229745811
+      ]
+    },
+    {
+      "id": "reagent_tube_black_03",
+      "name": {
+        "en": "Tube 03",
+        "zh": "03 号试管"
+      },
+      "files": {
+        "glb": "models/reagent_tube_black_03.glb"
+      },
+      "world_from_asset": [
+        [
+          0.9575547737903118,
+          0.0031468134666596268,
+          -0.2882341977565994,
+          0.43315842747688293
+        ],
+        [
+          -0.00494859716322931,
+          0.9999725053053956,
+          -0.005522682261926675,
+          0.7224067449569702
+        ],
+        [
+          0.2882088939944437,
+          0.00671462569739895,
+          0.957544018426434,
+          -1.5094068050384521
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "source_prim_paths": [
+        "/World/Lab/reagent_tube_black_03"
+      ],
+      "dimensions_source_xyz_m": [
+        0.03556624799966812,
+        0.03556624799966812,
+        0.11302350461483002
+      ],
+      "source_basis": "original USD local X,Y,Z",
+      "dimensions_evidence": "preview geometry bounds",
+      "pick_bounds_y_up_m": [
+        [
+          -0.01778312399983406,
+          -3.145393255272493e-21,
+          -0.01778312399983406
+        ],
+        [
+          0.01778312399983406,
+          0.11302350461483002,
+          0.01778312399983406
+        ]
+      ],
+      "provenance": "Registered display geometry from the frozen simulation USD",
+      "physics_parameters_measured": false,
+      "geometry": {
+        "triangles": 1182
+      },
+      "position_m": [
+        0.43315842747688293,
+        0.7224067449569702,
+        -1.5094068050384521
+      ],
+      "rotation_xyzw": [
+        0.0030923315832065918,
+        -0.14566546698570124,
+        -0.002045686359535851,
+        0.9893269552481301
+      ]
+    },
+    {
+      "id": "reagent_tube_black_04_uncapped",
+      "name": {
+        "en": "Tube 04",
+        "zh": "04 号试管"
+      },
+      "files": {
+        "glb": "models/reagent_tube_black_04_uncapped.glb"
+      },
+      "world_from_asset": [
+        [
+          0.9575496843749607,
+          0.0030929562176275965,
+          -0.2882516878966174,
+          0.3613426089286804
+        ],
+        [
+          -0.004902354708024811,
+          0.9999725513957983,
+          -0.005555481373767478,
+          0.7227743268013
+        ],
+        [
+          0.288226592929469,
+          0.006732761455258102,
+          0.9575385637411461,
+          -1.5310249328613281
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "source_prim_paths": [
+        "/World/Lab/reagent_tube_black_04_uncapped"
+      ],
+      "dimensions_source_xyz_m": [
+        0.02800000086426735,
+        0.02800000086426735,
+        0.11421548575162888
+      ],
+      "source_basis": "original USD local X,Y,Z",
+      "dimensions_evidence": "preview geometry bounds",
+      "pick_bounds_y_up_m": [
+        [
+          -0.014000000432133675,
+          -3.145393255272493e-21,
+          -0.014000000432133675
+        ],
+        [
+          0.014000000432133675,
+          0.11421548575162888,
+          0.014000000432133675
+        ]
+      ],
+      "provenance": "Registered display geometry from the frozen simulation USD",
+      "physics_parameters_measured": false,
+      "geometry": {
+        "triangles": 912
+      },
+      "position_m": [
+        0.3613426089286804,
+        0.7227743268013,
+        -1.5310249328613281
+      ],
+      "rotation_xyzw": [
+        0.0031052068375718514,
+        -0.14567455446962205,
+        -0.0020203941686606055,
+        0.9893256288391483
+      ]
+    },
+    {
+      "id": "reagent_cap_black_04",
+      "name": {
+        "en": "Tube 04 cap",
+        "zh": "04 号管盖"
+      },
+      "files": {
+        "glb": "models/reagent_cap_black_04.glb"
+      },
+      "world_from_asset": [
+        [
+          0.9575497192260909,
+          0.0030927513938080915,
+          -0.28825157432154846,
+          0.3613426089286804
+        ],
+        [
+          -0.00490212570564158,
+          0.9999725527818346,
+          -0.005555433965734051,
+          0.7227743268013
+        ],
+        [
+          0.2882264810415607,
+          0.006732649686241044,
+          0.9575385982061515,
+          -1.5310249328613281
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "source_prim_paths": [
+        "/World/Lab/reagent_cap_black_04"
+      ],
+      "dimensions_source_xyz_m": [
+        0.03359999880194664,
+        0.03359999880194664,
+        0.009999997913837433
+      ],
+      "source_basis": "original USD local X,Y,Z",
+      "dimensions_evidence": "preview geometry bounds",
+      "pick_bounds_y_up_m": [
+        [
+          -0.01679999940097332,
+          0.10721548646688461,
+          -0.01679999940097332
+        ],
+        [
+          0.01679999940097332,
+          0.11721548438072205,
+          0.01679999940097332
+        ]
+      ],
+      "provenance": "Supplied CAD / existing shape hypothesis",
+      "physics_parameters_measured": false,
+      "geometry": {
+        "triangles": 480
+      },
+      "position_m": [
+        0.3613426089286804,
+        0.7227743268013,
+        -1.5310249328613281
+      ],
+      "rotation_xyzw": [
+        0.003105166585909195,
+        -0.14567449618034758,
+        -0.0020202845236711496,
+        0.9893256377722752
+      ]
+    },
+    {
+      "id": "printed_pipette_stand_01",
+      "name": {
+        "en": "Pipette stand",
+        "zh": "白色移液枪支架"
+      },
+      "files": {
+        "glb": "models/printed_pipette_stand_01.glb"
+      },
+      "world_from_asset": [
+        [
+          -0.8931156483258592,
+          0.003121130986763888,
+          -0.4498162927872261,
+          0.6581584811210632
+        ],
+        [
+          -0.0002446953047377776,
+          0.9999724093190566,
+          0.007424333293208495,
+          0.7206921577453613
+        ],
+        [
+          0.44982705436610626,
+          0.006740856177390754,
+          -0.8930902429308628,
+          -1.3575870990753174
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "source_prim_paths": [
+        "/World/SmallSkills/printed_pipette_stand_01"
+      ],
+      "dimensions_source_xyz_m": [
+        0.1599999964237213,
+        0.10716032236814499,
+        0.13000012934207916
+      ],
+      "source_basis": "original USD local X,Y,Z",
+      "dimensions_evidence": "preview geometry bounds",
+      "pick_bounds_y_up_m": [
+        [
+          -0.07999999821186066,
+          0.0,
+          -0.053580161184072495
+        ],
+        [
+          0.07999999821186066,
+          0.13000012934207916,
+          0.053580161184072495
+        ]
+      ],
+      "provenance": "User STL, unchanged metric geometry",
+      "physics_parameters_measured": false,
+      "geometry": {
+        "triangles": 6940
+      },
+      "position_m": [
+        0.6581584811210632,
+        0.7206921577453613,
+        -1.3575870990753174
+      ],
+      "rotation_xyzw": [
+        0.0007391356348691276,
+        0.9729052241323122,
+        0.0036399201893567035,
+        -0.23117445688393784
+      ],
+      "description": {
+        "en": "Supports the pipette at the workstation",
+        "zh": "承托移液枪"
+      }
+    },
+    {
+      "id": "pipette_body",
+      "name": {
+        "en": "Pipette",
+        "zh": "移液枪"
+      },
+      "files": {
+        "glb": "models/pipette_body.glb"
+      },
+      "world_from_asset": [
+        [
+          -0.7524229689898284,
+          -0.008599987377109215,
+          -0.6586241082390204,
+          0.6586843176256276
+        ],
+        [
+          0.009898943191810415,
+          0.9996541993563598,
+          -0.024361704227746864,
+          0.8972038628574688
+        ],
+        [
+          0.6586058659473181,
+          -0.024849988456908213,
+          -0.7520776498563658,
+          -1.3569679779368766
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "source_prim_paths": [
+        "/World/S5/Pipette",
+        "/World/S7/Plunger",
+        "/World/S6/Ejector"
+      ],
+      "dimensions_source_xyz_m": [
+        0.04671766981482506,
+        0.05599788948893547,
+        0.22329989075660706
+      ],
+      "source_basis": "original USD local X,Y,Z",
+      "dimensions_evidence": "preview geometry bounds",
+      "pick_bounds_y_up_m": [
+        [
+          -0.025489404797554016,
+          -0.13449989259243011,
+          -0.02275577187538147
+        ],
+        [
+          0.021228265017271042,
+          0.08879999816417694,
+          0.033242117613554
+        ]
+      ],
+      "provenance": "Registered display geometry from the frozen simulation USD",
+      "physics_parameters_measured": false,
+      "geometry": {
+        "triangles": 42036
+      },
+      "position_m": [
+        0.6586843176256276,
+        0.8972038628574688,
+        -1.3569679779368766
+      ],
+      "rotation_xyzw": [
+        0.000346954671936079,
+        0.935969392956115,
+        -0.013144578512665763,
+        -0.35183575021242697
+      ],
+      "description": {
+        "en": "Separate tool model for pickup and tip fitting",
+        "zh": "取枪和装枪头的独立工具"
+      }
+    },
+    {
+      "id": "six_well_plate",
+      "name": {
+        "en": "Six-well plate",
+        "zh": "六孔板"
+      },
+      "files": {
+        "glb": "models/six_well_plate.glb"
+      },
+      "world_from_asset": [
+        [
+          -0.11495199029688269,
+          0.0031084211160745494,
+          0.9933661850722273,
+          0.47137147188186646
+        ],
+        [
+          0.006992473564144957,
+          0.9999728612555625,
+          -0.002319927976976501,
+          0.724237859249115
+        ],
+        [
+          -0.9933464376743091,
+          0.006679406450334208,
+          -0.1149706061966757,
+          -1.8013238906860352
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "source_prim_paths": [
+        "/World/SmallSkills/six_well_plate"
+      ],
+      "dimensions_source_xyz_m": [
+        0.12775999307632446,
+        0.08546999841928482,
+        0.020269999280571938
+      ],
+      "source_basis": "original USD local X,Y,Z",
+      "dimensions_evidence": "preview geometry bounds",
+      "pick_bounds_y_up_m": [
+        [
+          -0.06387999653816223,
+          0.0,
+          -0.04273499920964241
+        ],
+        [
+          0.06387999653816223,
+          0.020269999280571938,
+          0.04273499920964241
+        ]
+      ],
+      "provenance": "Registered display geometry from the frozen simulation USD",
+      "physics_parameters_measured": false,
+      "geometry": {
+        "triangles": 6196
+      },
+      "position_m": [
+        0.47137147188186646,
+        0.724237859249115,
+        -1.8013238906860352
+      ],
+      "rotation_xyzw": [
+        0.003382108965965796,
+        0.7466417242809835,
+        0.001459695571378591,
+        0.6652161800426241
+      ],
+      "description": {
+        "en": "Six visible wells and a separately registered lid",
+        "zh": "六个孔位，板盖单独登记"
+      }
+    },
+    {
+      "id": "six_well_plate_cover",
+      "name": {
+        "en": "Six-well plate lid",
+        "zh": "六孔板盖"
+      },
+      "files": {
+        "glb": "models/six_well_plate_cover.glb"
+      },
+      "world_from_asset": [
+        [
+          -0.11495199166692888,
+          0.0031082303914085536,
+          0.9933661855104795,
+          0.31505507230758667
+        ],
+        [
+          0.006992021094480598,
+          0.9999728647433666,
+          -0.0023197883437186635,
+          0.7248271107673645
+        ],
+        [
+          -0.9933464407007361,
+          0.006678973033276812,
+          -0.11497060522759767,
+          -1.8167943954467773
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "source_prim_paths": [
+        "/World/SmallSkills/six_well_plate_cover"
+      ],
+      "dimensions_source_xyz_m": [
+        0.1321599930524826,
+        0.08986999839544296,
+        0.012000000104308128
+      ],
+      "source_basis": "original USD local X,Y,Z",
+      "dimensions_evidence": "preview geometry bounds",
+      "pick_bounds_y_up_m": [
+        [
+          -0.0660799965262413,
+          0.0,
+          -0.04493499919772148
+        ],
+        [
+          0.0660799965262413,
+          0.012000000104308128,
+          0.04493499919772148
+        ]
+      ],
+      "provenance": "Registered display geometry from the frozen simulation USD",
+      "physics_parameters_measured": false,
+      "geometry": {
+        "triangles": 60
+      },
+      "position_m": [
+        0.31505507230758667,
+        0.7248271107673645,
+        -1.8167943954467773
+      ],
+      "rotation_xyzw": [
+        0.0033818936005781935,
+        0.7466417249320273,
+        0.0014595972017084227,
+        0.6652161806226679
+      ],
+      "description": {
+        "en": "Separate lid for pickup and closing",
+        "zh": "单独可拿取和合盖的板盖"
+      }
+    },
+    {
+      "id": "pipette_tip_01",
+      "name": {
+        "en": "Selected pipette tip",
+        "zh": "选中枪头"
+      },
+      "files": {
+        "glb": "models/pipette_tip_01.glb"
+      },
+      "world_from_asset": [
+        [
+          -0.6980620211887132,
+          0.003108797591646518,
+          -0.716030550990293,
+          0.7196984004579304
+        ],
+        [
+          -0.0026122014691915022,
+          0.999972863893154,
+          0.006888242214661759,
+          0.7297027390303611
+        ],
+        [
+          0.7160325348595641,
+          0.00667883634008705,
+          -0.6980349576974849,
+          -1.5373352103359947
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "source_prim_paths": [
+        "/World/S5/SelectedTip"
+      ],
+      "dimensions_source_xyz_m": [
+        0.008700000122189522,
+        0.008700000122189522,
+        0.09300000220537186
+      ],
+      "source_basis": "original USD local X,Y,Z",
+      "dimensions_evidence": "preview geometry bounds",
+      "pick_bounds_y_up_m": [
+        [
+          -0.004350000061094761,
+          0.0,
+          -0.004350000061094761
+        ],
+        [
+          0.004350000061094761,
+          0.09300000220537186,
+          0.004350000061094761
+        ]
+      ],
+      "provenance": "Registered display geometry from the frozen simulation USD",
+      "physics_parameters_measured": false,
+      "geometry": {
+        "triangles": 1344
+      },
+      "position_m": [
+        0.7196984004579304,
+        0.7297027390303611,
+        -1.5373352103359947
+      ],
+      "rotation_xyzw": [
+        0.00013473642560432302,
+        0.9214214349009026,
+        0.0036810188152959374,
+        -0.3885472574240346
+      ]
+    },
+    {
+      "id": "waterbath_01",
+      "name": {
+        "en": "Water bath",
+        "zh": "水浴锅"
+      },
+      "files": {
+        "glb": "models/waterbath_01.glb",
+        "sog": "splats/waterbath_01.sog"
+      },
+      "world_from_asset": [
+        [
+          0.7181640853110528,
+          0.0,
+          0.6958738007493449,
+          1.8006738546885637
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.9701485554427169
+        ],
+        [
+          -0.6958738007493449,
+          0.0,
+          0.7181640853110528,
+          -1.4814977045371622
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "source_prim_paths": [
+        "/World/S16Bath"
+      ],
+      "dimensions_source_xyz_m": [
+        0.34950145542621613,
+        0.2115140900015831,
+        0.20776529338210822
+      ],
+      "source_basis": "original USD local X,Y,Z",
+      "dimensions_evidence": "preview geometry bounds",
+      "pick_bounds_y_up_m": [
+        [
+          -0.17334368169307707,
+          -0.20320505976676942,
+          -0.10328887850046163
+        ],
+        [
+          0.17615777373313907,
+          0.0045602336153388046,
+          0.10822521150112148
+        ]
+      ],
+      "provenance": "Registered display geometry from the frozen simulation USD",
+      "physics_parameters_measured": false,
+      "geometry": {
+        "triangles": 1164,
+        "gaussians": 27265
+      },
+      "position_m": [
+        1.8006738546885637,
+        0.9701485554427169,
+        -1.4814977045371622
+      ],
+      "rotation_xyzw": [
+        0.0,
+        0.3753904065695788,
+        0.0,
+        0.9268667879773913
+      ],
+      "description": {
+        "en": "Observed bath body and separately authored tube ports",
+        "zh": "实扫锅身与单独建模的试管孔"
+      }
+    },
+    {
+      "id": "tip_box_01",
+      "name": {
+        "en": "Pipette tip box",
+        "zh": "枪头盒"
+      },
+      "files": {
+        "glb": "models/tip_box_01.glb"
+      },
+      "world_from_asset": [
+        [
+          -0.6980620211887132,
+          0.003108797591646518,
+          -0.716030550990293,
+          0.7705000042915344
+        ],
+        [
+          -0.0026122014691915022,
+          0.999972863893154,
+          0.006888242214661759,
+          0.7215917706489563
+        ],
+        [
+          0.7160325348595641,
+          0.00667883634008705,
+          -0.6980349576974849,
+          -1.5443998575210571
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "source_prim_paths": [
+        "/World/SmallSkills/tip_box_01"
+      ],
+      "dimensions_source_xyz_m": [
+        0.12400000018998983,
+        0.08800000018998977,
+        0.10100000230036688
+      ],
+      "source_basis": "original USD local X,Y,Z",
+      "dimensions_evidence": "preview geometry bounds",
+      "pick_bounds_y_up_m": [
+        [
+          -0.06200000009499494,
+          -9.499493509521062e-11,
+          -0.044000000094994864
+        ],
+        [
+          0.062000000094994887,
+          0.10100000220537195,
+          0.0440000000949949
+        ]
+      ],
+      "provenance": "Registered display geometry from the frozen simulation USD",
+      "physics_parameters_measured": false,
+      "geometry": {
+        "triangles": 128004
+      },
+      "position_m": [
+        0.7705000042915344,
+        0.7215917706489563,
+        -1.5443998575210571
+      ],
+      "rotation_xyzw": [
+        0.00013473642560432302,
+        0.9214214349009026,
+        0.0036810188152959374,
+        -0.3885472574240346
+      ],
+      "description": {
+        "en": "Registered rack of pipette tips",
+        "zh": "带独立枪头孔位的盒体"
+      }
+    },
+    {
+      "id": "waste_container",
+      "name": {
+        "en": "Tip waste container",
+        "zh": "枪头废盒"
+      },
+      "files": {
+        "glb": "models/waste_container.glb"
+      },
+      "world_from_asset": [
+        [
+          0.9999951292588197,
+          0.003121130986763888,
+          3.3881317890172014e-21,
+          0.8936657371953708
+        ],
+        [
+          -0.003121060074510481,
+          0.9999724093190566,
+          -0.0067408890105164505,
+          0.7197630764540784
+        ],
+        [
+          -2.1039197569059057e-05,
+          0.006740856177390754,
+          0.9999772799495735,
+          -1.3288063837402413
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "source_prim_paths": [
+        "/World/S6/WasteContainer"
+      ],
+      "dimensions_source_xyz_m": [
+        0.1599999964237213,
+        0.11500000208616257,
+        0.07999999821186066
+      ],
+      "source_basis": "original USD local X,Y,Z",
+      "dimensions_evidence": "preview geometry bounds",
+      "pick_bounds_y_up_m": [
+        [
+          -0.07999999821186066,
+          0.0,
+          -0.057500001043081284
+        ],
+        [
+          0.07999999821186066,
+          0.07999999821186066,
+          0.057500001043081284
+        ]
+      ],
+      "provenance": "Registered display geometry from the frozen simulation USD",
+      "physics_parameters_measured": false,
+      "geometry": {
+        "triangles": 60
+      },
+      "position_m": [
+        0.8936657371953708,
+        0.7197630764540784,
+        -1.3288063837402413
+      ],
+      "rotation_xyzw": [
+        0.003370459545422092,
+        5.259835673074619e-06,
+        -0.0015605585295954245,
+        0.999993102292142
+      ]
+    },
+    {
+      "id": "capper_01",
+      "name": {
+        "en": "Tube capper",
+        "zh": "旋盖机"
+      },
+      "files": {
+        "glb": "models/capper_01.glb",
+        "sog": "splats/capper_01.sog"
+      },
+      "world_from_asset": [
+        [
+          0.7071045324359764,
+          0.0031083481507224084,
+          0.7071021979744319,
+          0.1860800006389618
+        ],
+        [
+          0.0025251194094079153,
+          0.9999728620543644,
+          -0.006920905054308182,
+          0.7237439155578613
+        ],
+        [
+          -0.7071045212558515,
+          0.006679320817000611,
+          0.70707749412137,
+          -1.589758059501648
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "source_prim_paths": [
+        "/World/SmallSkills/capper_01",
+        "/World/SmallSkills/capper_rotor",
+        "/World/SmallSkills/capper_jaw_left",
+        "/World/SmallSkills/capper_jaw_right"
+      ],
+      "dimensions_source_xyz_m": [
+        0.2643039993111176,
+        0.15170327001141246,
+        0.4486709244036539
+      ],
+      "source_basis": "original USD local X,Y,Z",
+      "dimensions_evidence": "preview geometry bounds",
+      "pick_bounds_y_up_m": [
+        [
+          -0.12564920320811884,
+          3.874303620976516e-10,
+          -0.0832210147003038
+        ],
+        [
+          0.13865479610299875,
+          0.4486709247910843,
+          0.06848225531110866
+        ]
+      ],
+      "provenance": "Registered display geometry from the frozen simulation USD",
+      "physics_parameters_measured": false,
+      "geometry": {
+        "triangles": 636,
+        "gaussians": 34113
+      },
+      "position_m": [
+        0.1860800006389618,
+        0.7237439155578613,
+        -1.589758059501648
+      ],
+      "rotation_xyzw": [
+        0.0036802262240797448,
+        0.382684868885947,
+        -0.00015782191624851767,
+        0.9238715939744699
+      ],
+      "description": {
+        "en": "Registered capper body, rotor and two jaws",
+        "zh": "登记了旋盖机本体、转子和两个夹指"
+      }
+    }
+  ],
+  "physics_execution": false,
+  "reference_images": {
+    "operation_site_2": "reference/operation_site_2.jpg",
+    "operation_site_3": "reference/operation_site_3.jpg"
+  },
+  "asset_pose_application": "Use either position_m + rotation_xyzw or world_from_asset. File-local coordinates are already Y-up.",
+  "export_status": "Geometric position, GLB readback and SOG archive integrity checked. Browser integration and rendered appearance pending."
+}
