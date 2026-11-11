@@ -27,6 +27,8 @@ The current page is based on the user-supplied nine-page manuscript `BioAgent_Wo
 - Aggregate transfer and data-production numbers reproduce Tables 1 and 2. `app.js` contains the successes out of 20 for all 11 skills and three backbones.
 - Retention is the ratio of the macro-averaged success rates. Each skill is initialized independently, so results are not presented as end-to-end workflow success rates.
 - Debugging-session and teleoperation-attempt counts retain their different definitions and are not described as a total labor-hour speedup.
+- The headline skill-library indicator uses **46+ BioAgent skill entries**, counted from the 46 `skills/atomic/**/*.atomic_skill.yaml` entries in `suiuko/bioagent` branch `cvpr/spatial-memory-bioagent`, commit `484f72086d9b9353d07ff481097d0ce22051e71b`. This library includes candidates, navigation, readiness, and observation entries; it is not a count of validated learned manipulation policies and is not added to the 11 evaluation skills, which may overlap. The visible scope note preserves the paper's 11-skill evaluation boundary.
+- Headline indicators show **3+** backbones and **1,320+** real-world skill trials as requested. The reported evaluation remains exactly three backbones and 1,320 trials. Six matched training conditions means three backbones × two data sources, not six different backbones.
 
 ## User-supplied videos
 
