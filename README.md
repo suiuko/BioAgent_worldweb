@@ -36,6 +36,8 @@ See [scene/README.md](scene/README.md) for asset conventions, controls, verified
 
 The current page is based on the user-supplied nine-page manuscript `BioAgent_World_cvpr.pdf`. It supersedes the first draft's description of the earlier offline BioagentNav implementation. The PDF itself is not distributed by this website; author affiliations, publication status, and acceptance claims are not inferred from the review template.
 
+The project owner supplied the displayed author order: Gaojing Zhang, Changwen Chen, Zichen Luo, Yuhan Wang, Jialiang Li, and Wenzhao Lian. All six authors are affiliated with Shanghai Jiao Tong University; Gaojing Zhang is also affiliated with the University of Sussex. Wenzhao Lian is the corresponding author.
+
 - `assets/paper-overview.webp`: manuscript Figure 1, extracted from the original embedded 3840×2160 image.
 - `assets/paper-workflow.webp`: manuscript Figure 2, extracted from the original embedded 3840×2160 image.
 - `assets/paper-real-executions.webp`: manuscript Figure 3, original 2326×1164 image.
