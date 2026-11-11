@@ -11,3 +11,4 @@
 .asset-bubble>strong{display:block;font-family:var(--display);font-size:15px;line-height:1.4}.bubble-dimensions{display:block;font-size:10px;font-variant-numeric:tabular-nums;color:#819475;margin-top:7px}
 .asset-bubble p{font-size:11px;line-height:1.7;color:#6c8260;margin-top:9px}.bubble-hint{display:block;border-top:1px solid #e1e9d9;font-size:9px;color:#8d9f7e;margin-top:10px;padding-top:9px}
 @media(max-width:700px){.asset-bubble{width:min(224px,calc(100% - 20px));padding:12px 14px}.asset-bubble>strong{font-size:14px}.asset-bubble p{font-size:10px}}
+@media(min-width:701px) and (max-width:980px){.empty-selection h1{font-size:20px;letter-spacing:-.5px}}
