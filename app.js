@@ -56,19 +56,22 @@ function setLanguage(next) {
   }
   renderSkills(); updatePlayButton();
 }
-labOpen.addEventListener('click', () => {
-  heroVideo.pause(); demoVideos.forEach(video => video.pause());
+function openLab({scroll = false} = {}) {
+  if (labFrame) return;
+  if (scroll) { heroVideo.pause(); demoVideos.forEach(video => video.pause()); }
   labOpen.hidden = true; labOpen.setAttribute('aria-expanded','true'); labWindow.hidden = false;
   labFrame = document.createElement('iframe');
   labFrame.id = 'lab-frame'; labFrame.className = 'lab-frame';
   labFrame.title = language === 'zh' ? '可交互的 3D 实验室' : 'Interactive 3D laboratory';
   labFrame.allow = 'fullscreen'; labFrame.allowFullscreen = true;
+  labFrame.loading = scroll ? 'eager' : 'lazy';
   const url = new URL('scene/',location.href); url.searchParams.set('embedded','1'); url.searchParams.set('lang',language);
   labFrame.src = url.href;
   labFrame.addEventListener('load', () => labFrame?.contentWindow?.postMessage({type:'bioagent:language',language},location.origin));
   labMount.replaceChildren(labFrame);
-  labWindow.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
-});
+  if (scroll) labWindow.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
+}
+labOpen.addEventListener('click', () => openLab({scroll:true}));
 document.querySelector('#lab-close').addEventListener('click', async () => {
   if (document.fullscreenElement === labWindow) await document.exitFullscreen();
   labFrame?.remove(); labFrame = null;
@@ -116,3 +119,4 @@ tabs.forEach((tab, index) => {
   });
 });
 setLanguage(language);
+openLab();
