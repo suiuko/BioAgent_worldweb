@@ -17,6 +17,9 @@ The manifest is the only scene entry point. Background SOG and static-room GLB l
 - A left-pointer gesture moving less than 6 CSS pixels is a click. Dragging, cancellation, and multi-pointer gestures suppress selection. Results from asynchronous GPU picking are discarded after a camera change.
 - GPU picking supports GLB and SOG. Registered local `pick_bounds_y_up_m` supply a fallback if the rendered selection has no registered asset. Highlighting combines mesh emission with a wire bounds overlay, including for transparent or scanned objects.
 - The directory selects equipment; “Focus on this object” centers it. It does not change asset placement.
+- Hovering shows a lightweight bounds-based preview bubble with the device name, dimensions, and purpose, without changing the selected device or detailed equipment panel. Clicking pins the bubble to the selected device's projected position. Bubbles remain inside the canvas, disappear during camera dragging or when the selected object moves offscreen, and cannot intercept pointer input.
+
+On the homepage, “Explore the 3D Lab” mounts the viewer in place. No iframe, engine, or 3D data is loaded before opening it. Full-screen mode enlarges the same viewer; closing unmounts it. Embedded mode hides only the standalone header and retains the camera tools and detailed equipment panel. Language messages are accepted only from the same-origin parent, with explicit `en` / `zh` validation.
 
 The property panel shows both language names, the original asset ID, source-local X/Y/Z dimensions in meters, dimension evidence, purpose, and geometry provenance. Only the rack dimensions have user-confirmed STL scale. Other displayed dimensions are bounds of exported preview geometry, not independently measured physical dimensions.
 
@@ -37,7 +40,9 @@ The following were selected by actual canvas clicks, after clearing any director
 
 Dragging the view retained the previously selected rack instead of selecting an object at release. Pan, zoom, preset switching, reset, and Chinese/English switching were checked. The automated checks also exercise inverse transforms, ray/bounds hits and misses, and the click/drag threshold. The other nine groups are available in the directory; individual canvas selection of those groups has not been exhaustively checked. Touch controls need a physical touch-device pass.
 
-The English and Chinese homepage links both navigate correctly and share the language preference with the viewer. A 390 × 844 responsive viewport uses the stacked mobile layout with no horizontal page overflow. This checks layout, not physical mobile GPU performance.
+The standalone viewer and homepage share the language preference. A 390 × 844 responsive viewport uses the stacked mobile layout with no horizontal page overflow. The inline window and selected-device bubble also fit this viewport. This checks layout, not physical mobile GPU performance.
+
+The subsequent inline-window update was checked for opening without top-level navigation, hover preview without changing the selected equipment, persistent click bubbles, drag/selection separation, full-screen entry/exit, closing from full screen, reopening, and live parent/iframe language synchronization. Bubble positioning is also checked at all four viewport corners for mobile, embedded desktop, and full-screen sizes.
 
 Both operation presets were compared with `data/reference/`. The capper, rack, pipette stand, tip box, waste container, and water bath retain the reference's relative placement and orientation. Viewport aspect and camera FOV affect framing; manifest eye/target values are used unchanged.
 

@@ -4,6 +4,11 @@ const languageToggle = document.querySelector('#language-toggle');
 const heroVideo = document.querySelector('#hero-video');
 const heroToggle = document.querySelector('#hero-play-toggle');
 const demoVideos = [...document.querySelectorAll('.recording-frame video')];
+const labOpen = document.querySelector('#lab-open');
+const labWindow = document.querySelector('#lab-window');
+const labMount = document.querySelector('#lab-frame-mount');
+const labFullscreen = document.querySelector('#lab-fullscreen');
+let labFrame = null;
 let backbone = 0;
 // Manuscript Table 1: successes out of 20, ordered as π0.5, Diffusion Policy, LingBot-VA.
 const skills = [
@@ -45,8 +50,41 @@ function setLanguage(next) {
   languageToggle.setAttribute('aria-label', next === 'en' ? 'Switch to Chinese' : '切换到英文');
   document.title = next === 'en' ? 'BioAgent-world — Interactive Digital Twins for Scalable Robot Skill Learning' : 'BioAgent-world — 用于规模化机器人技能学习的可交互数字孪生';
   try { localStorage.setItem('bioagent-world-language', next); } catch {}
+  if (labFrame) {
+    labFrame.title = next === 'zh' ? '可交互的 3D 实验室' : 'Interactive 3D laboratory';
+    labFrame.contentWindow?.postMessage({type:'bioagent:language',language:next}, location.origin);
+  }
   renderSkills(); updatePlayButton();
 }
+labOpen.addEventListener('click', () => {
+  heroVideo.pause(); demoVideos.forEach(video => video.pause());
+  labOpen.hidden = true; labOpen.setAttribute('aria-expanded','true'); labWindow.hidden = false;
+  labFrame = document.createElement('iframe');
+  labFrame.id = 'lab-frame'; labFrame.className = 'lab-frame';
+  labFrame.title = language === 'zh' ? '可交互的 3D 实验室' : 'Interactive 3D laboratory';
+  labFrame.allow = 'fullscreen'; labFrame.allowFullscreen = true;
+  const url = new URL('scene/',location.href); url.searchParams.set('embedded','1'); url.searchParams.set('lang',language);
+  labFrame.src = url.href;
+  labFrame.addEventListener('load', () => labFrame?.contentWindow?.postMessage({type:'bioagent:language',language},location.origin));
+  labMount.replaceChildren(labFrame);
+  labWindow.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
+});
+document.querySelector('#lab-close').addEventListener('click', async () => {
+  if (document.fullscreenElement === labWindow) await document.exitFullscreen();
+  labFrame?.remove(); labFrame = null;
+  labWindow.hidden = true; labOpen.hidden = false; labOpen.setAttribute('aria-expanded','false');
+  labOpen.focus({preventScroll:true});
+});
+labFullscreen.hidden = !document.fullscreenEnabled;
+labFullscreen.addEventListener('click', async () => {
+  try { if (document.fullscreenElement === labWindow) await document.exitFullscreen(); else await labWindow.requestFullscreen(); } catch {}
+});
+document.addEventListener('fullscreenchange', () => {
+  const label = labFullscreen.querySelector('[data-en]');
+  label.dataset.en = document.fullscreenElement === labWindow ? 'Exit full screen' : 'Full screen';
+  label.dataset.zh = document.fullscreenElement === labWindow ? '退出全屏' : '全屏浏览';
+  label.textContent = label.dataset[language];
+});
 languageToggle.addEventListener('click', () => setLanguage(language === 'en' ? 'zh' : 'en'));
 heroToggle.addEventListener('click', async () => {
   if (heroVideo.paused) { try { await heroVideo.play(); } catch {} } else heroVideo.pause();

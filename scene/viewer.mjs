@@ -1,13 +1,15 @@
 import * as pc from './vendor/playcanvas-2.24.0.min.mjs';
-import {boundsCenter,isClickGesture,rayBoundsDistance,toWorld} from './math.mjs';
+import {boundsCenter,bubblePosition,isClickGesture,rayBoundsDistance,toWorld} from './math.mjs';
 
 const $=id=>document.getElementById(id);
 const canvas=$('lab-canvas'),viewport=$('viewport');
 const priority=['reagent_rack_black_01','pipette_body','six_well_plate','six_well_plate_cover','capper_01','waterbath_01'];
 let language='en';
 try{language=localStorage.getItem('bioagent-world-language')==='zh'?'zh':'en';}catch{}
+const parameters=new URLSearchParams(location.search),embedded=parameters.get('embedded')==='1'&&window.parent!==window;
+if(embedded){document.body.classList.add('is-embedded');if(['en','zh'].includes(parameters.get('lang')))language=parameters.get('lang');}
 const text=(en,zh)=>language==='zh'?zh:en;
-const state={scene:null,app:null,camera:null,picker:null,groups:new Map(),selected:null,preset:null,ready:false,errors:[],loaded:0,total:0,scanVisible:true,viewRevision:0,pickToken:0,target:new pc.Vec3(),yaw:0,pitch:0,distance:1};
+const state={scene:null,app:null,camera:null,picker:null,groups:new Map(),selected:null,hovered:null,hoverPoint:null,interacting:false,bubbleKey:null,preset:null,ready:false,errors:[],loaded:0,total:0,scanVisible:true,viewRevision:0,pickToken:0,target:new pc.Vec3(),yaw:0,pitch:0,distance:1};
 const fallbackPurpose={
   reagent_tube_black_01:['Separate reagent tube for storage and handling','独立登记的试管，用于存放与拿取'],
   reagent_tube_black_02:['Separate reagent tube for storage and handling','独立登记的试管，用于存放与拿取'],
@@ -28,7 +30,7 @@ function setLanguage(next){
   $('zoom-out').setAttribute('aria-label',text('Zoom out','缩小'));
   $('clear-selection').setAttribute('aria-label',text('Clear selection','取消选择'));
   for(const [id,record] of state.groups){const button=document.querySelector(`[data-asset-id="${id}"]`);if(button)button.firstElementChild.textContent=record.spec.name[language];}
-  renderDetails();renderViewLabel();renderLoadStatus();
+  renderDetails();renderViewLabel();renderLoadStatus();renderBubble();
   $('toggle-background').textContent=text(state.scanVisible?'Scan on':'Scan off',state.scanVisible?'扫描开':'扫描关');
 }
 function renderViewLabel(){
@@ -45,6 +47,34 @@ function evidenceLabel(spec){
   if(spec.dimensions_evidence==='preview geometry bounds')return text('Bounds of the exported display geometry','导出显示几何的包围尺寸');
   return spec.dimensions_evidence||text('Not provided','未提供');
 }
+function dimensionsLabel(spec){return spec.dimensions_source_xyz_m.map(v=>Number(v.toFixed(6))).join(' × ')+' m';}
+function purposeLabel(spec){return spec.description?.[language]||fallbackPurpose[spec.id]?.[language==='zh'?1:0]||text('Independently registered laboratory equipment','独立登记的实验室设备');}
+function setHover(id,point=null){
+  state.hovered=id;state.hoverPoint=point;canvas.dataset.hoveredId=id||'';
+  canvas.classList.toggle('is-hovering',!!id);renderBubble();
+}
+function renderBubble(){
+  const bubble=$('asset-bubble'),id=state.hovered||state.selected,record=state.groups.get(id);
+  if(!record||!state.camera||state.interacting){bubble.hidden=true;canvas.removeAttribute('aria-describedby');return;}
+  const pinned=!state.hovered||id===state.selected,key=`${id}:${language}:${pinned}`;
+  if(state.bubbleKey!==key){
+    $('bubble-name').textContent=record.spec.name[language];$('bubble-dimensions').textContent=dimensionsLabel(record.spec);
+    $('bubble-purpose').textContent=purposeLabel(record.spec);
+    $('bubble-hint').textContent=pinned?text('Selected · see the equipment panel','已选中 · 可在属性面板查看详情'):text('Click to view full details','单击查看完整设备信息');
+    state.bubbleKey=key;
+  }
+  let point=state.hoverPoint;
+  if(pinned){
+    const center=new pc.Vec3(...toWorld(boundsCenter(record.spec),record.spec));
+    const depth=state.camera.forward.dot(center.clone().sub(state.camera.getPosition()));
+    point=state.camera.camera.worldToScreen(center);
+    if(depth<=state.camera.camera.nearClip||point.x<0||point.y<0||point.x>canvas.clientWidth||point.y>canvas.clientHeight){bubble.hidden=true;canvas.removeAttribute('aria-describedby');return;}
+  }
+  if(!point){bubble.hidden=true;return;}
+  bubble.hidden=false;bubble.dataset.assetId=id;bubble.dataset.mode=pinned?'selected':'hover';canvas.setAttribute('aria-describedby','asset-bubble');
+  const place=bubblePosition(point.x,point.y,bubble.offsetWidth,bubble.offsetHeight,canvas.clientWidth,canvas.clientHeight);
+  bubble.style.left=`${place.left}px`;bubble.style.top=`${place.top}px`;bubble.style.setProperty('--bubble-arrow',`${place.arrow}px`);bubble.dataset.above=String(place.above);
+}
 function renderDetails(){
   const record=state.groups.get(state.selected),spec=record?.spec;
   $('empty-selection').hidden=!!spec;$('asset-details').hidden=!spec;$('selection-caption').hidden=!spec;
@@ -52,9 +82,9 @@ function renderDetails(){
   if(!spec)return;
   $('asset-name').textContent=spec.name[language];$('asset-other-name').textContent=spec.name[language==='zh'?'en':'zh'];
   $('asset-id').textContent=spec.id;
-  $('asset-dimensions').textContent=spec.dimensions_source_xyz_m.map(v=>Number(v.toFixed(6))).join(' × ')+' m';
+  $('asset-dimensions').textContent=dimensionsLabel(spec);
   $('asset-evidence').textContent=evidenceLabel(spec);
-  $('asset-purpose').textContent=spec.description?.[language]||fallbackPurpose[spec.id]?.[language==='zh'?1:0]||text('Independently registered laboratory equipment','独立登记的实验室设备');
+  $('asset-purpose').textContent=purposeLabel(spec);
   const provenance={
     'User STL, unchanged metric geometry':['User STL; original metric geometry preserved','用户 STL；保留原米制几何'],
     'Registered display geometry from the frozen simulation USD':['Display geometry registered in the frozen simulation scene','冻结仿真场景中登记的显示几何'],
@@ -74,13 +104,13 @@ function selectAsset(id,method='directory'){
     const original=mesh.material,highlight=original.clone();
     if(highlight.emissive){highlight.emissive.set(.08,.35,.11);highlight.emissiveIntensity=1;highlight.update();mesh.material=highlight;current.highlights.push({mesh,original,highlight});}
   }
-  renderDetails();
+  renderDetails();renderBubble();
 }
 function updateCamera(custom=true){
   if(!state.camera)return;
   const r=state.distance,c=Math.cos(state.pitch);
   state.camera.setPosition(state.target.x+r*Math.sin(state.yaw)*c,state.target.y+r*Math.sin(state.pitch),state.target.z+r*Math.cos(state.yaw)*c);
-  state.camera.lookAt(state.target);state.viewRevision++;
+  state.camera.lookAt(state.target);state.viewRevision++;setHover(null);
   if(custom){state.preset=null;canvas.dataset.view='custom';renderViewLabel();}
 }
 function setPreset(key){
@@ -100,6 +130,12 @@ function focusSelection(){
   const center=toWorld(boundsCenter(record.spec),record.spec);state.target.set(...center);
   const box=record.spec.pick_bounds_y_up_m;const size=Math.max(...box[0].map((v,i)=>box[1][i]-v));state.distance=Math.max(.25,size*3.4);updateCamera();
 }
+function pickBoundsAt(x,y){
+  const camera=state.camera,origin=camera.getPosition(),far=camera.camera.screenToWorld(x,y,camera.camera.farClip),direction=far.sub(origin).normalize();
+  let closest=Infinity,id=null;
+  for(const [key,record] of state.groups){if(!record.loaded)continue;const distance=rayBoundsDistance([origin.x,origin.y,origin.z],[direction.x,direction.y,direction.z],record.spec);if(distance!==null&&distance<closest){closest=distance;id=key;}}
+  return id;
+}
 async function pickAt(x,y){
   if(!state.ready)return;
   const revision=state.viewRevision,token=++state.pickToken,app=state.app,camera=state.camera;
@@ -110,11 +146,7 @@ async function pickAt(x,y){
     const hits=await state.picker.getSelectionAsync(Math.round(x*scale),Math.round(y*scale),1,1);
     for(const hit of hits){let entity=hit.entity||hit.node;while(entity&&!entity._labAssetId)entity=entity.parent;if(entity?._labAssetId){id=entity._labAssetId;method='rendered';break;}}
   }catch(error){console.warn('GPU picking unavailable; using registered bounds.',error);}
-  if(!id){
-    const origin=camera.getPosition(),far=camera.camera.screenToWorld(x,y,camera.camera.farClip),direction=far.sub(origin).normalize();
-    let closest=Infinity;
-    for(const [key,record] of state.groups){if(!record.loaded)continue;const distance=rayBoundsDistance([origin.x,origin.y,origin.z],[direction.x,direction.y,direction.z],record.spec);if(distance!==null&&distance<closest){closest=distance;id=key;}}
-  }
+  if(!id)id=pickBoundsAt(x,y);
   if(token!==state.pickToken||revision!==state.viewRevision)return;
   canvas.dataset.lastGesture='click';selectAsset(id,method);
 }
@@ -124,12 +156,16 @@ function installControls(){
   canvas.addEventListener('contextmenu',e=>e.preventDefault());
   canvas.addEventListener('pointerdown',e=>{
     if(![0,1,2].includes(e.button))return;e.preventDefault();canvas.focus({preventScroll:true});canvas.setPointerCapture(e.pointerId);
+    state.interacting=true;setHover(null);
     const point=local(e);pointers.set(e.pointerId,point);
     if(!gesture)gesture={button:e.button,start:point,last:point,distance:0,multi:false,cancelled:false};
     if(pointers.size>1)gesture.multi=true;
   });
   canvas.addEventListener('pointermove',e=>{
-    if(!pointers.has(e.pointerId)||!gesture)return;
+    if(!pointers.has(e.pointerId)||!gesture){
+      if(state.ready&&!gesture&&e.pointerType!=='touch'){const point=local(e);setHover(pickBoundsAt(point.x,point.y),point);}
+      return;
+    }
     const before=[...pointers.values()],point=local(e);pointers.set(e.pointerId,point);
     if(pointers.size>1){
       const after=[...pointers.values()];gesture.multi=true;
@@ -146,16 +182,17 @@ function installControls(){
     if(!gesture||!pointers.has(e.pointerId))return;const point=local(e);
     gesture.distance=Math.max(gesture.distance,Math.hypot(point.x-gesture.start.x,point.y-gesture.start.y));gesture.cancelled||=cancelled;
     pointers.delete(e.pointerId);
-    if(pointers.size===0){if(isClickGesture(gesture))void pickAt(point.x,point.y);else canvas.dataset.lastGesture=gesture.cancelled?'cancelled':gesture.multi?'touch':canvas.dataset.lastGesture;gesture=null;canvas.classList.remove('dragging');}
+    if(pointers.size===0){state.interacting=false;if(isClickGesture(gesture))void pickAt(point.x,point.y);else canvas.dataset.lastGesture=gesture.cancelled?'cancelled':gesture.multi?'touch':canvas.dataset.lastGesture;gesture=null;canvas.classList.remove('dragging');renderBubble();}
     else gesture.multi=true;
   };
   canvas.addEventListener('pointerup',e=>end(e));canvas.addEventListener('pointercancel',e=>end(e,true));
+  canvas.addEventListener('pointerleave',()=>{if(!gesture)setHover(null);});
   canvas.addEventListener('wheel',e=>{e.preventDefault();if(state.camera)zoom(Math.exp(Math.max(-120,Math.min(120,e.deltaY))*.002));},{passive:false});
   canvas.addEventListener('keydown',e=>{
     if(!state.ready)return;
     if(e.key==='2')setPreset('operation_site_2');else if(e.key==='3')setPreset('operation_site_3');else if(e.key.toLowerCase()==='r')setPreset(state.scene.initial_view);else if(e.key==='Escape')selectAsset(null);else if(e.key==='+'||e.key==='=')zoom(.85);else if(e.key==='-')zoom(1.15);else if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){const dx=e.key==='ArrowLeft'?-15:e.key==='ArrowRight'?15:0,dy=e.key==='ArrowUp'?-15:e.key==='ArrowDown'?15:0;if(e.shiftKey)pan(dx,dy);else orbit(dx,dy);}else return;e.preventDefault();
   });
-  window.addEventListener('blur',()=>{pointers.clear();gesture=null;canvas.classList.remove('dragging');});
+  window.addEventListener('blur',()=>{pointers.clear();gesture=null;state.interacting=false;canvas.classList.remove('dragging');setHover(null);});
 }
 function drawSelection(){
   const record=state.groups.get(state.selected);if(!record)return;
@@ -190,7 +227,7 @@ async function initialize(){
     const fill=new pc.Entity('FillLight');fill.addComponent('light',{type:'directional',intensity:.8,castShadows:false});fill.setEulerAngles(50,-70,0);app.root.addChild(fill);
     state.picker=new pc.Picker(app,1,1,true);
     const resize=()=>{const rect=viewport.getBoundingClientRect();app.resizeCanvas(rect.width,rect.height);canvas.style.width='100%';canvas.style.height='100%';};new ResizeObserver(resize).observe(viewport);resize();
-    setPreset(scene.initial_view);app.on('update',drawSelection);app.start();installControls();
+    setPreset(scene.initial_view);app.on('update',()=>{drawSelection();renderBubble();});app.start();installControls();
     state.total=2+scene.assets.reduce((count,asset)=>count+Object.keys(asset.files).length,0);$('loading-progress').max=state.total;
     // Both world resources are already metric Y-up; the root remains identity.
     await safeLoad('Room scan','gsplat',scene.background_sog,app.root,null);
@@ -216,4 +253,5 @@ $('view-site-2').addEventListener('click',()=>setPreset('operation_site_2'));$('
 $('zoom-in').addEventListener('click',()=>{if(state.camera)zoom(.85);});$('zoom-out').addEventListener('click',()=>{if(state.camera)zoom(1.15);});
 $('clear-selection').addEventListener('click',()=>selectAsset(null));$('focus-selection').addEventListener('click',focusSelection);
 $('toggle-background').addEventListener('click',()=>{state.scanVisible=!state.scanVisible;if(state.background)state.background.enabled=state.scanVisible;$('toggle-background').setAttribute('aria-pressed',String(state.scanVisible));$('toggle-background').textContent=text(state.scanVisible?'Scan on':'Scan off',state.scanVisible?'扫描开':'扫描关');});
+window.addEventListener('message',event=>{if(embedded&&event.origin===location.origin&&event.source===window.parent&&event.data?.type==='bioagent:language'&&['en','zh'].includes(event.data.language))setLanguage(event.data.language);});
 setLanguage(language);void initialize();

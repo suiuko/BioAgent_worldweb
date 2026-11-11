@@ -19,7 +19,9 @@ The build writes a fresh `dist/` directory. GitHub Actions validates and deploys
 
 ## Interactive 10.21 laboratory
 
-The homepage demo section links to `scene/`. PlayCanvas 2.24.0 is vendored with its MIT license; the engine and 3D assets load only on that separate page. All resource URLs resolve relative to `scene/data/scene.json`, including when hosted under a GitHub Pages project path.
+The homepage demo section opens the laboratory in an inline interactive window without navigating away. The viewer is mounted on demand from `scene/` and can be expanded to full screen or closed. Closing removes the viewer frame; reopening loads a fresh view. The main page language switch also updates the open viewer. The standalone `scene/` page remains available.
+
+PlayCanvas 2.24.0 is vendored with its MIT license; the engine and 3D assets load only when the viewer opens. All resource URLs resolve relative to `scene/data/scene.json`, including when hosted under a GitHub Pages project path. Hovering previews a device in a bubble; selecting it pins the bubble and populates the existing detailed equipment panel.
 
 ```sh
 node scripts/check.mjs

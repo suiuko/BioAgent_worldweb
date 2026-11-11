@@ -14,6 +14,12 @@ export function toLocal(point, asset) {
   return rotatePoint(point.map((v,i)=>v-asset.position_m[i]),[-x,-y,-z,w]);
 }
 export function boundsCenter(asset) {return asset.pick_bounds_y_up_m[0].map((v,i)=>(v+asset.pick_bounds_y_up_m[1][i])/2);}
+export function bubblePosition(x,y,width,height,viewportWidth,viewportHeight) {
+  const clamp=(value,lo,hi)=>Math.max(lo,Math.min(Math.max(lo,hi),value));
+  const left=clamp(x+16,10,viewportWidth-width-10);
+  const top=clamp(y-height-18>=10?y-height-18:y+18,10,viewportHeight-height-10);
+  return {left,top,above:top+height<=y,arrow:clamp(x-left,16,width-16)};
+}
 export function rayBoundsDistance(origin,direction,asset) {
   const localOrigin=toLocal(origin,asset),[x,y,z,w]=asset.rotation_xyzw;
   const localDirection=rotatePoint(direction,[-x,-y,-z,w]);
