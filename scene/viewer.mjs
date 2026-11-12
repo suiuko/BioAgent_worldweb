@@ -10,15 +10,25 @@ const parameters=new URLSearchParams(location.search),embedded=parameters.get('e
 if(embedded){document.body.classList.add('is-embedded');if(['en','zh'].includes(parameters.get('lang')))language=parameters.get('lang');}
 const text=(en,zh)=>language==='zh'?zh:en;
 const state={scene:null,app:null,camera:null,picker:null,groups:new Map(),selected:null,hovered:null,hoverPoint:null,interacting:false,bubbleKey:null,preset:null,ready:false,errors:[],loaded:0,total:0,scanVisible:true,viewRevision:0,pickToken:0,target:new pc.Vec3(),yaw:0,pitch:0,distance:1};
-const fallbackPurpose={
-  reagent_tube_black_01:['Separate reagent tube for storage and handling','独立登记的试管，用于存放与拿取'],
-  reagent_tube_black_02:['Separate reagent tube for storage and handling','独立登记的试管，用于存放与拿取'],
-  reagent_tube_black_03:['Separate reagent tube for storage and handling','独立登记的试管，用于存放与拿取'],
-  reagent_tube_black_04_uncapped:['Open reagent tube for pipette access','开口试管，便于移液枪接近'],
-  reagent_cap_black_04:['Separate cap belonging to tube 04','04 号试管的独立管盖'],
-  pipette_tip_01:['A separately registered pipette tip','独立登记的移液枪头'],
-  waste_container:['Receives discarded pipette tips','收集退弃的移液枪头']
+// Presentation copy stays separate from the original, checksummed export.
+const equipmentPurpose={
+  reagent_rack_black_01:['Holds and positions four reagent tubes','用于放置和定位四支试管'],
+  reagent_tube_black_01:['Stores reagents','用于存放试剂'],
+  reagent_tube_black_02:['Stores reagents','用于存放试剂'],
+  reagent_tube_black_03:['Stores reagents','用于存放试剂'],
+  reagent_tube_black_04_uncapped:['Open tube for pipetting','开口试管，用于移液操作'],
+  reagent_cap_black_04:['Cap for tube 04','04 号试管的管盖'],
+  printed_pipette_stand_01:['Holds the pipette at the workstation','用于放置移液枪'],
+  pipette_body:['Aspirates and dispenses liquids','用于吸取和分装液体'],
+  six_well_plate:['Holds liquids in six wells','六个孔位，用于盛放液体'],
+  six_well_plate_cover:['Covers the six-well plate','用于覆盖六孔板'],
+  pipette_tip_01:['Pipette tip for liquid handling','用于移液操作的枪头'],
+  waterbath_01:['Heats tubes in a water bath','用于水浴加热试管'],
+  tip_box_01:['Stores pipette tips','用于存放移液枪头'],
+  waste_container:['Collects discarded pipette tips','用于收集废弃枪头'],
+  capper_01:['Caps and uncaps reagent tubes','用于旋紧和旋开试管盖']
 };
+function nameLabel(spec,lang=language){return spec.id==='pipette_tip_01'?(lang==='zh'?'移液枪头':'Pipette tip'):spec.name[lang];}
 function setLanguage(next){
   language=next;document.documentElement.lang=next==='zh'?'zh-CN':'en';
   document.querySelectorAll('[data-en][data-zh]').forEach(el=>el.textContent=el.dataset[next]);
@@ -29,9 +39,9 @@ function setLanguage(next){
   $('zoom-in').setAttribute('aria-label',text('Zoom in','放大'));
   $('zoom-out').setAttribute('aria-label',text('Zoom out','缩小'));
   $('clear-selection').setAttribute('aria-label',text('Clear selection','取消选择'));
-  for(const [id,record] of state.groups){const button=document.querySelector(`[data-asset-id="${id}"]`);if(button)button.firstElementChild.textContent=record.spec.name[language];}
+  for(const [id,record] of state.groups){const button=document.querySelector(`[data-asset-id="${id}"]`);if(button)button.firstElementChild.textContent=nameLabel(record.spec);}
   renderDetails();renderViewLabel();renderLoadStatus();renderBubble();
-  $('toggle-background').textContent=text(state.scanVisible?'Scan on':'Scan off',state.scanVisible?'扫描开':'扫描关');
+  $('toggle-background').textContent=text(state.scanVisible?'Scan on':'Scan off',state.scanVisible?'扫描：开':'扫描：关');
 }
 function renderViewLabel(){
   const key=state.preset;$('view-label').textContent=key?text(`Operation site ${key.endsWith('2')?'2':'3'}`,`操作位 ${key.endsWith('2')?'2':'3'}`):text('Custom view','自由视角');
@@ -39,16 +49,16 @@ function renderViewLabel(){
 }
 function renderLoadStatus(){
   $('asset-count').textContent=text(`${state.groups.size||15} objects`,`${state.groups.size||15} 个物体`);
-  $('load-status').textContent=state.ready?text(`${state.loaded}/${state.total} files loaded · PlayCanvas ${pc.version}`,`${state.loaded}/${state.total} 文件已加载 · PlayCanvas ${pc.version}`):text('Loading scene…','正在加载场景…');
+  $('load-status').textContent=state.ready?text(`${state.loaded}/${state.total} resources loaded`,`${state.loaded}/${state.total} 项资源已加载`):text('Loading scene…','正在加载场景…');
   if(state.errors.length){$('load-warning').hidden=false;$('load-warning').textContent=text('Some resources could not load: ','部分资源加载失败：')+state.errors.join(' · ');}
 }
 function evidenceLabel(spec){
   if(spec.dimensions_evidence==='user-confirmed STL scale')return text('User-confirmed STL units and scale','用户确认的 STL 单位与尺度');
-  if(spec.dimensions_evidence==='preview geometry bounds')return text('Bounds of the exported display geometry','导出显示几何的包围尺寸');
+  if(spec.dimensions_evidence==='preview geometry bounds')return text('Display geometry bounds','显示几何的包围尺寸');
   return spec.dimensions_evidence||text('Not provided','未提供');
 }
 function dimensionsLabel(spec){return spec.dimensions_source_xyz_m.map(v=>Number(v.toFixed(6))).join(' × ')+' m';}
-function purposeLabel(spec){return spec.description?.[language]||fallbackPurpose[spec.id]?.[language==='zh'?1:0]||text('Independently registered laboratory equipment','独立登记的实验室设备');}
+function purposeLabel(spec){return equipmentPurpose[spec.id]?.[language==='zh'?1:0]||spec.description?.[language]||text('Laboratory equipment','实验室设备');}
 function setHover(id,point=null){
   state.hovered=id;state.hoverPoint=point;canvas.dataset.hoveredId=id||'';
   canvas.classList.toggle('is-hovering',!!id);renderBubble();
@@ -58,9 +68,9 @@ function renderBubble(){
   if(!record||!state.camera||state.interacting){bubble.hidden=true;canvas.removeAttribute('aria-describedby');return;}
   const pinned=!state.hovered||id===state.selected,key=`${id}:${language}:${pinned}`;
   if(state.bubbleKey!==key){
-    $('bubble-name').textContent=record.spec.name[language];$('bubble-dimensions').textContent=dimensionsLabel(record.spec);
+    $('bubble-name').textContent=nameLabel(record.spec);$('bubble-dimensions').textContent=dimensionsLabel(record.spec);
     $('bubble-purpose').textContent=purposeLabel(record.spec);
-    $('bubble-hint').textContent=pinned?text('Selected · see the equipment panel','已选中 · 可在属性面板查看详情'):text('Click to view full details','单击查看完整设备信息');
+    $('bubble-hint').textContent=pinned?text('Selected · details in the panel','已选中 · 详情见属性面板'):text('Click for details','单击查看详情');
     state.bubbleKey=key;
   }
   let point=state.hoverPoint;
@@ -80,18 +90,18 @@ function renderDetails(){
   $('empty-selection').hidden=!!spec;$('asset-details').hidden=!spec;$('selection-caption').hidden=!spec;
   document.querySelectorAll('[data-asset-id]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.assetId===state.selected)));
   if(!spec)return;
-  $('asset-name').textContent=spec.name[language];$('asset-other-name').textContent=spec.name[language==='zh'?'en':'zh'];
+  $('asset-name').textContent=nameLabel(spec);$('asset-other-name').textContent=nameLabel(spec,language==='zh'?'en':'zh');
   $('asset-id').textContent=spec.id;
   $('asset-dimensions').textContent=dimensionsLabel(spec);
   $('asset-evidence').textContent=evidenceLabel(spec);
   $('asset-purpose').textContent=purposeLabel(spec);
   const provenance={
-    'User STL, unchanged metric geometry':['User STL; original metric geometry preserved','用户 STL；保留原米制几何'],
-    'Registered display geometry from the frozen simulation USD':['Display geometry registered in the frozen simulation scene','冻结仿真场景中登记的显示几何'],
+    'User STL, unchanged metric geometry':['Original user-supplied STL','用户提供的原始 STL'],
+    'Registered display geometry from the frozen simulation USD':['Simulation display geometry','仿真场景显示几何'],
     'Supplied CAD / existing shape hypothesis':['Supplied CAD / existing shape hypothesis','提供的 CAD / 已有形状假设']
   };
   $('asset-provenance').textContent=provenance[spec.provenance]?.[language==='zh'?1:0]||spec.provenance;
-  $('selection-caption').textContent=`${spec.name[language]} · ${spec.id}`;
+  $('selection-caption').textContent=`${nameLabel(spec)} · ${spec.id}`;
 }
 function selectAsset(id,method='directory'){
   if(id&&!state.groups.has(id))return;
@@ -230,8 +240,8 @@ async function initialize(){
     setPreset(scene.initial_view);app.on('update',()=>{drawSelection();renderBubble();});app.start();installControls();
     state.total=2+scene.assets.reduce((count,asset)=>count+Object.keys(asset.files).length,0);$('loading-progress').max=state.total;
     // Both world resources are already metric Y-up; the root remains identity.
-    await safeLoad('Room scan','gsplat',scene.background_sog,app.root,null);
-    await safeLoad('Static room surfaces','container',scene.static_geometry_glb,app.root,null);
+    await safeLoad(text('Room scan','实验室扫描'),'gsplat',scene.background_sog,app.root,null);
+    await safeLoad(text('Room geometry','实验室几何'),'container',scene.static_geometry_glb,app.root,null);
     const sorted=[...scene.assets].sort((a,b)=>(priority.indexOf(a.id)<0?99:priority.indexOf(a.id))-(priority.indexOf(b.id)<0?99:priority.indexOf(b.id)));
     for(const spec of sorted){
       const parent=new pc.Entity(spec.id);parent._labAssetId=spec.id;
@@ -240,11 +250,11 @@ async function initialize(){
       parent.setPosition(...spec.position_m);parent.setRotation(new pc.Quat(...spec.rotation_xyzw));app.root.addChild(parent);
       const record={spec,parent,loaded:false,meshes:[],highlights:[]};state.groups.set(spec.id,record);
       const button=document.createElement('button');button.type='button';button.dataset.assetId=spec.id;button.setAttribute('aria-pressed','false');button.disabled=true;
-      const name=document.createElement('span');name.textContent=spec.name[language];const icon=document.createElement('span');icon.textContent='↗';button.append(name,icon);button.addEventListener('click',()=>selectAsset(spec.id));$('equipment-list').append(button);
+      const name=document.createElement('span');name.textContent=nameLabel(spec);const icon=document.createElement('span');icon.textContent='↗';button.append(name,icon);button.addEventListener('click',()=>selectAsset(spec.id));$('equipment-list').append(button);
     }
     // Bounded concurrency keeps decoded textures and GLB uploads manageable.
     const queue=[...state.groups.values()];
-    await Promise.all(Array.from({length:3},async()=>{while(queue.length){const record=queue.shift();await Promise.all(Object.entries(record.spec.files).map(([format,path])=>safeLoad(record.spec.name.en,format==='glb'?'container':'gsplat',path,record.parent,record)));document.querySelector(`[data-asset-id="${record.spec.id}"]`).disabled=!record.loaded;}}));
+    await Promise.all(Array.from({length:3},async()=>{while(queue.length){const record=queue.shift();await Promise.all(Object.entries(record.spec.files).map(([format,path])=>safeLoad(nameLabel(record.spec),format==='glb'?'container':'gsplat',path,record.parent,record)));document.querySelector(`[data-asset-id="${record.spec.id}"]`).disabled=!record.loaded;}}));
     state.ready=true;canvas.dataset.loadedAssets=String([...state.groups.values()].filter(record=>record.loaded).length);canvas.dataset.loadErrors=String(state.errors.length);canvas.dataset.ready='true';$('loading-panel').hidden=true;renderLoadStatus();
   }catch(error){console.error(error);$('loading-panel').classList.add('failed');$('loading-detail').textContent=text('The scene could not start. WebGL2 and a local web server are required. ','场景未能启动，请确认 WebGL2 可用并通过本地服务器打开。')+error.message;$('loading-progress').hidden=true;canvas.dataset.ready='error';}
 }
@@ -252,6 +262,6 @@ $('language-toggle').addEventListener('click',()=>setLanguage(language==='en'?'z
 $('view-site-2').addEventListener('click',()=>setPreset('operation_site_2'));$('view-site-3').addEventListener('click',()=>setPreset('operation_site_3'));$('reset-view').addEventListener('click',()=>setPreset(state.scene?.initial_view));
 $('zoom-in').addEventListener('click',()=>{if(state.camera)zoom(.85);});$('zoom-out').addEventListener('click',()=>{if(state.camera)zoom(1.15);});
 $('clear-selection').addEventListener('click',()=>selectAsset(null));$('focus-selection').addEventListener('click',focusSelection);
-$('toggle-background').addEventListener('click',()=>{state.scanVisible=!state.scanVisible;if(state.background)state.background.enabled=state.scanVisible;$('toggle-background').setAttribute('aria-pressed',String(state.scanVisible));$('toggle-background').textContent=text(state.scanVisible?'Scan on':'Scan off',state.scanVisible?'扫描开':'扫描关');});
+$('toggle-background').addEventListener('click',()=>{state.scanVisible=!state.scanVisible;if(state.background)state.background.enabled=state.scanVisible;$('toggle-background').setAttribute('aria-pressed',String(state.scanVisible));$('toggle-background').textContent=text(state.scanVisible?'Scan on':'Scan off',state.scanVisible?'扫描：开':'扫描：关');});
 window.addEventListener('message',event=>{if(embedded&&event.origin===location.origin&&event.source===window.parent&&event.data?.type==='bioagent:language'&&['en','zh'].includes(event.data.language))setLanguage(event.data.language);});
 setLanguage(language);void initialize();
